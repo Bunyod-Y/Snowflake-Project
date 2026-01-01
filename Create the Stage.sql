@@ -1,0 +1,21 @@
+-- 1. Create Database & Schema
+CREATE DATABASE IF NOT EXISTS SALES_PROJECT_DB;
+CREATE SCHEMA IF NOT EXISTS SALES_PROJECT_DB.RAW_DATA;
+USE DATABASE SALES_PROJECT_DB;
+USE SCHEMA RAW_DATA;
+
+-- 2. Create File Format
+CREATE OR REPLACE FILE FORMAT CSV_FORMAT
+    TYPE = 'CSV'
+    FIELD_DELIMITER = ','
+    SKIP_HEADER = 1
+    NULL_IF = ('NULL', 'null')
+    EMPTY_FIELD_AS_NULL = TRUE;
+
+-- 3. Create the Stage (referencing the integration)
+CREATE OR REPLACE STAGE SALES_STAGE_GCP
+    URL = 'gcs://snowflake-project-landing-gcp/'
+    STORAGE_INTEGRATION = gcp_sales_int
+    FILE_FORMAT = CSV_FORMAT;
+
+LIST @SALES_STAGE_GCP;

@@ -1,0 +1,21 @@
+-- 1. Create Target Table
+USE DATABASE SALES_PROJECT_DB;
+USE SCHEMA RAW_DATA;
+
+CREATE OR REPLACE TABLE SALES_RAW (
+    transaction_id INT,
+    date DATE,
+    product STRING,
+    category STRING,
+    amount FLOAT,
+    region STRING
+);
+
+-- 2. Load Data
+COPY INTO SALES_RAW
+FROM @SALES_STAGE_GCP
+FILE_FORMAT = (FORMAT_NAME = CSV_FORMAT)
+ON_ERROR = 'CONTINUE';
+
+-- 3. Check Data
+SELECT * FROM SALES_RAW;
